@@ -30,3 +30,4 @@ What we deliberately are not doing.
 ## Index
 
 - [M1 — Run Cost Badge](M1-run-cost-badge.md) — per-run / per-PR cost and tokens
+- [M1 — Severity counters & filter](M1-severity-filter.md) — per-run findings counters with click-to-filter
