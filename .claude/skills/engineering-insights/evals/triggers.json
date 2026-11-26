@@ -1,0 +1,22 @@
+[
+  {"query": "запиши інсайти з цієї сесії", "should_trigger": true},
+  {"query": "Запусти engineering insights і запиши ці пункти", "should_trigger": true},
+  {"query": "ok, we're done with the cost column — wrap up and record what we learned", "should_trigger": true},
+  {"query": "what did we learn from fixing the flaky e2e flow 04?", "should_trigger": true},
+  {"query": "add a new route to the server for agent run history", "should_trigger": true},
+  {"query": "fix the failing typecheck in reviewer-core after the shared contract change", "should_trigger": true},
+  {"query": "No, don't hand-roll Schema.parse in the handler — use the route schema. Then finish the task.", "should_trigger": true},
+  {"query": "the client test suite passes but the page is broken in the browser — figure out why", "should_trigger": true},
+  {"query": "before we close this out, capture the gotchas we hit with drizzle migrations", "should_trigger": true},
+  {"query": "розкажи, що ми дізналися, і запиши це в модуль server", "should_trigger": true},
+  {"query": "what is 2 + 2?", "should_trigger": false},
+  {"query": "explain how React useEffect cleanup works in general", "should_trigger": false},
+  {"query": "write a README section describing the e2e flows", "should_trigger": false},
+  {"query": "I learned Redis SCAN beats KEYS — update the cache code to use SCAN", "should_trigger": false},
+  {"query": "create an ADR in server/docs for choosing pgvector", "should_trigger": false},
+  {"query": "fix the typo 'recieve' in client/messages/en/common.json", "should_trigger": false},
+  {"query": "show me the git diff of the last commit", "should_trigger": false},
+  {"query": "set up a lessons folder structure in the wiki", "should_trigger": false},
+  {"query": "open a GitHub issue for the rate limit bug", "should_trigger": false},
+  {"query": "rename the variable x to count in this snippet", "should_trigger": false}
+]
