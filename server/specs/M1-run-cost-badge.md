@@ -33,9 +33,10 @@ already in the LLM response (OpenRouter `usage.cost`, else tokens × price from
 **Routes**
 - `GET /pulls/:id/runs` → each `RunSummary` carries `cost_usd`.
 - `GET /runs/:id/trace` → `trace.stats.cost_usd`.
-- `GET /repos/:id/pulls` → `PrMeta.cost_usd` = sum of non-null `cost_usd` over the
-  runs of the PR's latest round (by `ran_at`); `null` if the PR has no round or no
-  run in it has a known cost.
+- `GET /repos/:id/pulls` → `PrMeta.cost_usd` = sum of non-null `cost_usd` over
+  **all** agent runs of the PR (every round, every agent); `null` if no run has a
+  known cost. (Changed from "latest round only" on review: the list shows the total
+  spent on the PR. `round_id` is still stored for grouping.)
 
 ## Acceptance criteria
 - [x] A successful run stores `agent_runs.cost_usd` = `ReviewOutcome.costUsd` and the
@@ -44,8 +45,8 @@ already in the LLM response (OpenRouter `usage.cost`, else tokens × price from
 - [x] Failed / cancelled runs (diff-load failure, per-agent error) store `cost_usd = NULL`.
 - [x] All runs created by one `POST /pulls/:id/review` share one non-null `round_id`.
 - [x] `GET /pulls/:id/runs` returns `cost_usd` per run.
-- [x] `GET /repos/:id/pulls`: with two rounds, `cost_usd` equals the sum of the latest
-      round only; a PR without runs returns `cost_usd: null`.
+- [x] `GET /repos/:id/pulls`: with two rounds, `cost_usd` equals the sum of all runs
+      (unknown costs skipped); a PR without runs returns `cost_usd: null`.
 - [x] No extra LLM call is made to obtain cost.
 - [x] `test/contracts.test.ts` covers the new nullish fields (old trace without
       `cost_usd` still parses).

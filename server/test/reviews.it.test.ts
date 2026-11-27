@@ -249,7 +249,7 @@ d('A2 reviews + agents (Testcontainers pg)', () => {
     await app.close();
   });
 
-  it('M1 run cost: PR list shows the latest round total; unreviewed PR → null', async () => {
+  it('M1 run cost: PR list shows the total of ALL runs; unreviewed PR → null', async () => {
     const db = pg.handle.db;
     const { repo, pr } = await setupRepoAndPr(db, workspaceId);
     const [fresh] = await db
@@ -289,7 +289,8 @@ d('A2 reviews + agents (Testcontainers pg)', () => {
       id: string;
       cost_usd: number | null;
     }[];
-    expect(list.find((p) => p.id === pr.id)!.cost_usd).toBeCloseTo(0.005, 10);
+    // 0.5 (older round) + 0.002 + 0.003 (latest round); the failed run's null is skipped.
+    expect(list.find((p) => p.id === pr.id)!.cost_usd).toBeCloseTo(0.505, 10);
     expect(list.find((p) => p.id === fresh!.id)!.cost_usd).toBeNull();
     await app.close();
   });

@@ -20,7 +20,7 @@ export const agentRuns = pgTable('agent_runs', {
   tokensOut: integer('tokens_out'),
   /** Total USD for the run (OpenRouter usage.cost, else tokens × price book). Null = unknown. */
   costUsd: doublePrecision('cost_usd'),
-  /** Shared by every run created by one review request — the PR list sums the latest round. */
+  /** Shared by every run created by one review request (groups a review round). */
   roundId: uuid('round_id'),
   status: text('status'),
   /** Failure reason when status='failed' (LLM/API error, timeout, quota, …). */

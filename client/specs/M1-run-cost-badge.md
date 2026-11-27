@@ -7,7 +7,7 @@ Design reference: `DevDigest Design (standalone).html` → `CostBadge`, artboard
 "Pull Requests · Run Review + auto-status + Cost".
 
 ## Goal
-Show what each reviewer run (and the latest review round of a PR) cost, in USD and
+Show what each reviewer run (and all runs of a PR in total) cost, in USD and
 tokens, wherever runs are shown.
 
 ## Scope
@@ -29,7 +29,7 @@ tokens, wherever runs are shown.
    `ReviewRecord.run_id` → `RunSummary` from `usePrRuns`).
 
 ## Contracts
-- `GET /repos/:id/pulls` → `PrMeta.cost_usd` (latest round total, nullish)
+- `GET /repos/:id/pulls` → `PrMeta.cost_usd` (total of all runs, nullish)
 - `GET /pulls/:id/runs` → `RunSummary.cost_usd` (nullish)
 - `GET /runs/:id/trace` → `RunStats.cost_usd` (nullish)
 - i18n (`messages/en`): `prReview.list.columns.cost`, `common.cost.tooltip`,

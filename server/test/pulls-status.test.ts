@@ -6,7 +6,7 @@
  * + age, so it gets unit coverage independent of the route's queries.
  */
 import { describe, it, expect } from 'vitest';
-import { deriveReviewStatus, latestRoundCostByPr, rollupSeverities, STALE_DAYS } from '../src/modules/pulls/status.js';
+import { deriveReviewStatus, rollupSeverities, totalCostByPr, STALE_DAYS } from '../src/modules/pulls/status.js';
 
 const DAY = 86_400_000;
 const now = Date.UTC(2026, 5, 11);
@@ -67,32 +67,27 @@ describe('rollupSeverities', () => {
   });
 });
 
-describe('latestRoundCostByPr', () => {
-  it('sums only the latest round (rows newest-first), ignoring older rounds', () => {
-    const m = latestRoundCostByPr([
-      { prId: 'p1', roundId: 'r2', costUsd: 0.002 },
-      { prId: 'p1', roundId: 'r2', costUsd: 0.003 },
-      { prId: 'p1', roundId: 'r1', costUsd: 0.5 },
+describe('totalCostByPr', () => {
+  it('sums the known cost of ALL runs of a PR, across rounds and agents', () => {
+    const m = totalCostByPr([
+      { prId: 'p1', costUsd: 0.002 },
+      { prId: 'p1', costUsd: 0.003 },
+      { prId: 'p1', costUsd: 0.5 },
+      { prId: 'p2', costUsd: 0.1 },
     ]);
-    expect(m.get('p1')).toBeCloseTo(0.005, 10);
+    expect(m.get('p1')).toBeCloseTo(0.505, 10);
+    expect(m.get('p2')).toBeCloseTo(0.1, 10);
   });
 
-  it('skips unknown costs inside a round; a round with no known cost is null (not 0)', () => {
-    const m = latestRoundCostByPr([
-      { prId: 'p1', roundId: 'r2', costUsd: null },
-      { prId: 'p1', roundId: 'r2', costUsd: 0.004 },
-      { prId: 'p2', roundId: 'r9', costUsd: null },
-      { prId: 'p2', roundId: 'r8', costUsd: 0.1 },
+  it('skips unknown costs; a PR with no known cost is null (not 0); PR-less runs ignored', () => {
+    const m = totalCostByPr([
+      { prId: 'p1', costUsd: null },
+      { prId: 'p1', costUsd: 0.004 },
+      { prId: 'p2', costUsd: null },
+      { prId: null, costUsd: 0.2 },
     ]);
     expect(m.get('p1')).toBeCloseTo(0.004, 10);
     expect(m.get('p2')).toBeNull();
-  });
-
-  it('ignores pre-M1 runs without a round and PR-less runs', () => {
-    const m = latestRoundCostByPr([
-      { prId: 'p1', roundId: null, costUsd: 0.2 },
-      { prId: null, roundId: 'r1', costUsd: 0.2 },
-    ]);
-    expect(m.size).toBe(0);
+    expect(m.size).toBe(2);
   });
 });
