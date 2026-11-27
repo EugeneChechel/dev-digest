@@ -29,7 +29,15 @@
   "panel": {
     "hideLowConfidence": "Hide low confidence",
     "noMatchTitle": "No findings match",
-    "noMatchBody": "Adjust the filters above, or run a review to generate findings."
+    "noMatchBody": "Adjust the filters above, or run a review to generate findings.",
+    "severity": {
+      "CRITICAL": "{count} CRITICAL",
+      "WARNING": "{count} WARNING",
+      "SUGGESTION": "{count} SUGGESTION",
+      "groupLabel": "Filter findings by severity",
+      "filterBy": "Show only {level} findings",
+      "clearFilter": "Clear severity filter"
+    }
   },
   "runReview": {
     "runAll": "Run all enabled agents",
@@ -92,6 +100,7 @@
       "size": "Size",
       "score": "Score",
       "status": "Status",
+      "cost": "Cost",
       "updated": "Updated"
     },
     "filesCount": "{count} files",

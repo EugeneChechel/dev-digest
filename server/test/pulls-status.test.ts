@@ -6,7 +6,7 @@
  * + age, so it gets unit coverage independent of the route's queries.
  */
 import { describe, it, expect } from 'vitest';
-import { deriveReviewStatus, rollupSeverities, STALE_DAYS } from '../src/modules/pulls/status.js';
+import { deriveReviewStatus, rollupSeverities, totalCostByPr, STALE_DAYS } from '../src/modules/pulls/status.js';
 
 const DAY = 86_400_000;
 const now = Date.UTC(2026, 5, 11);
@@ -64,5 +64,30 @@ describe('rollupSeverities', () => {
 
   it('is all-zero for no findings', () => {
     expect(rollupSeverities([])).toEqual({ critical: 0, warning: 0, suggestion: 0 });
+  });
+});
+
+describe('totalCostByPr', () => {
+  it('sums the known cost of ALL runs of a PR, across rounds and agents', () => {
+    const m = totalCostByPr([
+      { prId: 'p1', costUsd: 0.002 },
+      { prId: 'p1', costUsd: 0.003 },
+      { prId: 'p1', costUsd: 0.5 },
+      { prId: 'p2', costUsd: 0.1 },
+    ]);
+    expect(m.get('p1')).toBeCloseTo(0.505, 10);
+    expect(m.get('p2')).toBeCloseTo(0.1, 10);
+  });
+
+  it('skips unknown costs; a PR with no known cost is null (not 0); PR-less runs ignored', () => {
+    const m = totalCostByPr([
+      { prId: 'p1', costUsd: null },
+      { prId: 'p1', costUsd: 0.004 },
+      { prId: 'p2', costUsd: null },
+      { prId: null, costUsd: 0.2 },
+    ]);
+    expect(m.get('p1')).toBeCloseTo(0.004, 10);
+    expect(m.get('p2')).toBeNull();
+    expect(m.size).toBe(2);
   });
 });

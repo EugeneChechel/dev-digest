@@ -53,3 +53,21 @@ export function deriveReviewStatus(args: {
   if (updatedAt && now - updatedAt.getTime() > staleMs) return 'stale';
   return 'reviewed';
 }
+
+/**
+ * Total USD spent on each PR: the sum of the known `cost_usd` of ALL its agent
+ * runs (every review round, every agent). A PR whose runs have no known cost
+ * (all failed / unpriced / pre-M1) maps to null — the UI shows "—", never "$0.00".
+ */
+export function totalCostByPr(
+  runs: { prId: string | null; costUsd: number | null }[],
+): Map<string, number | null> {
+  const cost = new Map<string, number | null>();
+  for (const r of runs) {
+    if (!r.prId) continue;
+    if (!cost.has(r.prId)) cost.set(r.prId, null);
+    if (r.costUsd == null) continue;
+    cost.set(r.prId, (cost.get(r.prId) ?? 0) + r.costUsd);
+  }
+  return cost;
+}
